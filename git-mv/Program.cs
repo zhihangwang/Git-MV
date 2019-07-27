@@ -17,9 +17,9 @@ namespace git_mv
             DirectoryInfo oldDirectoryInfo = new DirectoryInfo(oldDirectory);
             newDirectory = Console.ReadLine().Trim();
             CreateDirectory(newDirectory);
-            var gitRoute = GetGitRoute(oldDirectoryInfo);
+            var gitSourcePath = GetGitSourceRoute(oldDirectoryInfo);
             Console.WriteLine("Move Start......");
-            GetMvDirectory(oldDirectoryInfo, gitRoute);
+            MoveDirectory(oldDirectoryInfo, gitSourcePath);
             Console.WriteLine("Move End......");
             Console.ReadLine();
         }
@@ -30,16 +30,15 @@ namespace git_mv
             {
                 Directory.CreateDirectory(directoryRoute);
             }
-
         }
 
-        private static string GetGitRoute(DirectoryInfo oldDirectory)
+        private static string GetGitSourceRoute(DirectoryInfo oldDirectory)
         {
             if (HaveGitNameDirectory(oldDirectory) || oldDirectory.Parent == null)
             {
                 return oldDirectory.FullName;
             }
-            return GetGitRoute(oldDirectory.Parent);
+            return GetGitSourceRoute(oldDirectory.Parent);
         }
 
         private static bool HaveGitNameDirectory(DirectoryInfo directory)
@@ -56,28 +55,27 @@ namespace git_mv
             return have;
         }
 
-        private static void GetMvDirectory(DirectoryInfo directoryInfo, string gitRoute)
+        private static void MoveDirectory(DirectoryInfo directoryInfo, string gitSourcePath)
         {
             var childrenDirectories = directoryInfo.GetDirectories();
             foreach (var childrenDirectorie in childrenDirectories)
             {
-                if (childrenDirectorie.Name != "bin" && childrenDirectorie.Name != "obj")
-                    GetMvDirectory(childrenDirectorie, gitRoute);
+                MoveDirectory(childrenDirectorie, gitSourcePath);
             }
-            GitMvFile(directoryInfo, gitRoute);
+            MoveFile(directoryInfo, gitSourcePath);
         }
 
-        private static void GitMvFile(DirectoryInfo directory, string gitRoute)
+        private static void MoveFile(DirectoryInfo directoryInfo, string gitSourcePath)
         {
-            var files = directory.GetFiles();
+            var files = directoryInfo.GetFiles();
             foreach (var file in files)
             {
-                var fileRoute = file.FullName.Replace(file.Name, "", StringComparison.InvariantCultureIgnoreCase);
-                var fileFullRoute = $"{fileRoute}{file.Name}";
-                var newRoute = newDirectory + fileRoute.Replace(oldDirectory, "", StringComparison.InvariantCultureIgnoreCase);
-                CreateDirectory(newRoute);
-                var newFullRoute = $"{newRoute}{file.Name}";
-                Cmd.RunCmd(gitRoute, $"git mv {fileFullRoute} {newFullRoute}");
+                var filePath = file.FullName.Replace(file.Name, "", StringComparison.InvariantCultureIgnoreCase);
+                var fileFullPath = $"{filePath}{file.Name}";
+                var fileNewPath = newDirectory + filePath.Replace(oldDirectory, "", StringComparison.InvariantCultureIgnoreCase);
+                CreateDirectory(fileNewPath);
+                var fileNewFullPath = $"{fileNewPath}{file.Name}";
+                Cmd.RunCmd(gitSourcePath, $"git mv {fileFullPath} {fileNewFullPath}");
             }
         }
     }
@@ -96,9 +94,9 @@ namespace git_mv
         /// ||：当||前的命令失败时,才执行||后的命令]]>
         /// </summary>
         /// <param name="cmd">执行的命令</param>
-        public static string RunCmd(string gitRoute,string cmd)
+        public static string RunCmd(string gitSourcePath,string cmd)
         {
-            cmd = $"cd {gitRoute}&" + cmd.Trim().TrimEnd('&') + "&exit";//说明：不管命令是否成功均执行exit命令，否则当调用ReadToEnd()方法时，会处于假死状态
+            cmd = $"cd {gitSourcePath}&" + cmd.Trim().TrimEnd('&') + "&exit";//说明：不管命令是否成功均执行exit命令，否则当调用ReadToEnd()方法时，会处于假死状态
             using (Process p = new Process())
             {
                 p.StartInfo.FileName = CmdPath;
@@ -107,7 +105,7 @@ namespace git_mv
                 p.StartInfo.RedirectStandardOutput = true;  //由调用程序获取输出信息
                 p.StartInfo.RedirectStandardError = true;   //重定向标准错误输出
                 p.StartInfo.CreateNoWindow = true;          //不显示程序窗口
-              
+
                 p.Start();//启动程序
 
                 //向cmd窗口写入命令
