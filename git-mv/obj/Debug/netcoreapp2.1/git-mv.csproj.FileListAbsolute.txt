@@ -1,0 +1,11 @@
+D:\jason\work\starlight\git-mv\git-mv\bin\Debug\netcoreapp2.1\git-mv.deps.json
+D:\jason\work\starlight\git-mv\git-mv\bin\Debug\netcoreapp2.1\git-mv.runtimeconfig.json
+D:\jason\work\starlight\git-mv\git-mv\bin\Debug\netcoreapp2.1\git-mv.runtimeconfig.dev.json
+D:\jason\work\starlight\git-mv\git-mv\bin\Debug\netcoreapp2.1\git-mv.dll
+D:\jason\work\starlight\git-mv\git-mv\bin\Debug\netcoreapp2.1\git-mv.pdb
+D:\jason\work\starlight\git-mv\git-mv\obj\Debug\netcoreapp2.1\git-mv.csprojAssemblyReference.cache
+D:\jason\work\starlight\git-mv\git-mv\obj\Debug\netcoreapp2.1\git-mv.csproj.CoreCompileInputs.cache
+D:\jason\work\starlight\git-mv\git-mv\obj\Debug\netcoreapp2.1\git-mv.AssemblyInfoInputs.cache
+D:\jason\work\starlight\git-mv\git-mv\obj\Debug\netcoreapp2.1\git-mv.AssemblyInfo.cs
+D:\jason\work\starlight\git-mv\git-mv\obj\Debug\netcoreapp2.1\git-mv.dll
+D:\jason\work\starlight\git-mv\git-mv\obj\Debug\netcoreapp2.1\git-mv.pdb
